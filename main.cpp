@@ -36,7 +36,7 @@ int main()
 void lab0()
 {
 	//Funkcja testowa
-	double epsilon = 1e-2;
+	double epsilon = 0.01;
 	int Nmax = 10000;
 	matrix lb(2, 1, -5), ub(2, 1, 5), a(2, 1);
 	solution opt;
@@ -72,7 +72,7 @@ void lab1()
 
 	double* ekspansja = new double[2];
 	int Nmax = 1000;
-	double epsilon = 0.01, gamma = 0.1;
+	double epsilon = 0.001, gamma = 0.1;
 
 	// Dane to tabeli 1
 	ofstream ekspansja_tabela_1("./dane/lab_01/funkcja_testowa/exp_tab_1.txt");
@@ -80,7 +80,7 @@ void lab1()
 	ofstream lagrange_tabela_1("./dane/lab_01/funkcja_testowa/lag_tab_1.txt");
 
 	// Trzy wpó³czynniki alfa dla ekspansji
-	double alpha, alpha_1 = 1.1, alpha_2 = 1.6, alpha_3 = 2.1;
+	double alpha, alpha_1 = 1.3, alpha_2 = 1.6, alpha_3 = 2.3;
 	double x;
 	double d = 2.0;
 	alpha = alpha_1;
