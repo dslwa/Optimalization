@@ -66,48 +66,95 @@ void lab0()
 	Y[1].~matrix();
 }
 
-void lab1(){
-	const double pkt = 62.744;
-	matrix x(pkt);
-	std::cout << "Wartosc funkcji celu dla punktu " << pkt << " = " << m2d(ff1T(x)) << "\n"; // wartosc minimum
-	srand(time(0));
-	double x0 = 0, alpha = 1.25, d = 2.0;
+void lab1()
+{
+	srand(time(NULL));
+
+	double* ekspansja = new double[2];
 	int Nmax = 1000;
-	double** p_wsk = new double*[100];
-	std::cout << "\t=========================FIBONACI================================\n";
-//	for (int i = 0; i < 100; i++) {
-		//double x0 = rand() % 201 - 100; // losuje z przedzia³u [-100, 100]
-	//	double* p = expansion(ff1T, x0, d, alpha, Nmax);		
-		//p_wsk[i] = p;
-		//std::cout << "," << x0 << "," << p[0] << "," << p[1] << "\n";
-	//}
-	std::cout << "\n" << p_wsk[0][0] << "," << p_wsk[0][1] << "\n";
-	double a, b, epsilon = 0.1;
-	//for (int i = 0; i < 100; i++) {
-		//a = p_wsk[i][0];
-		//b = p_wsk[i][1];
-		if (a > b) {
-			std::swap(a, b);
-		}
-		std::cout << a << "," << b << ",";
-		solution xopt = fib(ff1T, -100, 100, epsilon);
-		cout << m2d(xopt.x) << "," << m2d(xopt.y) << "\n";
-	//}
-	std::cout << "\t=======================LAGRANGE=============================\n";
+	double epsilon = 0.01, gamma = 0.1;
+
+	// Dane to tabeli 1
+	ofstream ekspansja_tabela_1("./dane/lab_01/funkcja_testowa/exp_tab_1.txt");
+	ofstream fibonaci_tabela_1("./dane/lab_01/funkcja_testowa/fib_tab_1.txt");
+	ofstream lagrange_tabela_1("./dane/lab_01/funkcja_testowa/lag_tab_1.txt");
+
+	// Trzy wpó³czynniki alfa dla ekspansji
+	double alpha, alpha_1 = 1.1, alpha_2 = 1.6, alpha_3 = 2.1;
+	double x;
+	double d = 2.0;
+	alpha = alpha_1;
+
+	for (int i = 0; i < 300; i++)
+	{
+		int range = 800;  // Liczba mo¿liwych wartoœci (od -100 do 100 z krokiem 0.25 to 800 wartoœci)
+		double x = -100 + (rand() % range) * 0.25;
+
+		if (i == 100) alpha = alpha_2;
+		else if (i == 200) alpha = alpha_3;
+		ekspansja = expansion(funkcja_testowa_lab1, x, d, alpha, Nmax);
+		ekspansja_tabela_1 << x << "," << ekspansja[0] << "," << ekspansja[1] << "," << solution::f_calls << "\n";
+		std::cout <<  i  << " " << x << "," << ekspansja[0] << "," << ekspansja[1] << "," << solution::f_calls << "\n";
+		solution::clear_calls();
+
+		solution fibonaci_1 = fib(funkcja_testowa_lab1, ekspansja[0], ekspansja[1], epsilon);
+		fibonaci_tabela_1 << m2d(fibonaci_1.x) << "," << m2d(fibonaci_1.y) << "," << solution::f_calls << "," << fibonaci_1.flag << "\n";
+		solution::clear_calls();
+
+		solution lagrange_1 = lag(funkcja_testowa_lab1, ekspansja[0], ekspansja[1], epsilon, gamma, Nmax);
+		lagrange_tabela_1 << m2d(lagrange_1.x) << "," << m2d(lagrange_1.y) << "," << solution::f_calls << "," << lagrange_1.flag << "\n";
+		solution::clear_calls();
+	}
+	ekspansja_tabela_1.close();
+	fibonaci_tabela_1.close();
+	lagrange_tabela_1.close();
+
+	// Dane do wykresu
+	ofstream fib_wykres("./dane/lab_01/funkcja_testowa/fibonaci_wykres.txt");
+	ofstream lag_wykres("./dane/lab_01/funkcja_testowa/lagrange_wykres.txt");
 	
-	double c, dd, gamma = 1e-200;
-	//for (int i = 0; i < 100; i++) {
-	//	c = p_wsk[i][0];
-		//dd = p_wsk[i][1];
-	//	if (c > dd) {
-	//		std::swap(c, dd);
-		//}
-	// 	solution xopt1 = lag(ff1T, -100, 100, epsilon, gamma, Nmax);
-	 	//cout << m2d(xopt1.x) << "," << m2d(xopt1.y) << "\n";
-	//}
+	solution fib2 = fib(funkcja_testowa_lab1, -100, 100, epsilon);
+	fib_wykres << fib2 << "\n\n" << fib2.ud << "\n";
+	solution::clear_calls();
 
+	solution lag2 = lag(funkcja_testowa_lab1, -100, 100, epsilon, gamma, Nmax);
+	lag_wykres << lag2 << "\n\n" << lag2.ud << "\n";
+	solution::clear_calls();
 
+	fib_wykres.close();
+	lag_wykres.close();
+
+	// Dane do tabeli 3
+	ofstream fib_tab_3("./dane/lab_01/funkcja_rzeczywista/fibonaci_tab_3.txt");
+	ofstream lag_tab_3("./dane/lab_01/funkcja_rzeczywista/lagrange_tab_3.txt");
+
+	solution fib3 = fib(fun_rzeczywista_lab1, 0.0001, 0.01, epsilon);
+	fib_tab_3 << fib3 << endl;
+	solution::clear_calls();
+
+	solution lag3 = lag(fun_rzeczywista_lab1, 0.0001, 0.01, epsilon, gamma, Nmax);
+	lag_tab_3 << lag3 << endl;
+	solution::clear_calls();
+
+	fib_tab_3.close();
+	lag_tab_3.close();
+
+	// Dane do symulacji
+	ofstream fib_sym("./dane/lab_01/funkcja_rzeczywista/fibonaci_symulacja.csv");
+	ofstream lag_sym("./dane/lab_01/funkcja_rzeczywista/lagrange_symulacja.csv");
+
+	matrix Y0 = matrix(3, new double[3] {5, 1, 20});
+	matrix* Y_fib = solve_ode(df1, 0, 1, 2000, Y0, NAN, fib3.x(0));
+	solution::clear_calls();
+	matrix* Y_lag = solve_ode(df1, 0, 1, 2000, Y0, NAN, lag3.x(0));
+
+	fib_sym << Y_fib[1];
+	lag_sym << Y_lag[1];
+
+	fib_sym.close();
+	lag_sym.close();
 }
+
 void lab2()
 {
 

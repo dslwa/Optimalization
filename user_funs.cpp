@@ -33,17 +33,29 @@ matrix df0(double t, matrix Y, matrix ud1, matrix ud2)
 	return dY;
 }
 
-matrix ff1T(matrix x, matrix ud1, matrix ud2)
+matrix funkcja_testowa_lab1(matrix x, matrix ud1, matrix ud2)
 {
 	matrix y;
-	y = -cos(0.1 * m2d(x)) * exp(-pow(0.1 * m2d(x) - 2 * _Pi, 2)) + 0.002 * pow(0.1 * x, 2);
+	double PI = 3.14;
+	y = -cos(0.1 * m2d(x)) * exp(-pow(0.1 * m2d(x) - 2 * PI, 2)) + 0.002 * pow(0.1 * x, 2);
 	return y;
 }
 
 double GetFib(int n) {
 	if (n <= 1)
 		return n;
-	return GetFib(n - 1) + GetFib(n - 2);
+
+	double prev1 = 0;
+	double prev2 = 1;
+	double current = 0;
+
+	for (int i = 2; i <= n; ++i) {
+		current = prev1 + prev2;
+		prev1 = prev2;
+		prev2 = current;
+	}
+
+	return current;
 }
 
 matrix df1(double t, matrix Y, matrix ud1, matrix ud2)
@@ -70,7 +82,7 @@ matrix df1(double t, matrix Y, matrix ud1, matrix ud2)
 	return dY;
 }
 
-matrix ff1R(matrix x, matrix ud1, matrix ud2)
+matrix fun_rzeczywista_lab1(matrix x, matrix ud1, matrix ud2)
 {
 	matrix Y0 = matrix(3, new double[3] {5, 1, 20});
 
@@ -85,9 +97,8 @@ matrix ff1R(matrix x, matrix ud1, matrix ud2)
 	double y;
 	for (int i = 1; i < length; i++)
 	{
-		if (max < Y[1](i, 2)) {
+		if (max < Y[1](i, 2))
 			max = Y[1](i, 2);
-		}
 	}
 	y = abs(max - 50);
 	return y;

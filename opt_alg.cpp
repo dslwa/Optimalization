@@ -1,4 +1,4 @@
-Ôªø#include"opt_alg.h"
+#include"opt_alg.h"
 
 solution MC(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
@@ -30,54 +30,49 @@ solution MC(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, do
 	}
 }
 
+
 double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, double alpha, int Nmax, matrix ud1, matrix ud2)
-{//funkcja celu, poczƒÖtkowa waro≈õc zmiennej, krok kt√≥ry okre≈õla odlweg≈Ço≈õc miƒôdzy punktem poczƒÖtkowaym a ko≈Ñcowym, alpha rozszerza lub zmienjsza krok z ka≈ºdym kroku pƒôtli, max liczba wywo≈Ça≈Ñ funkcji celu
+{//funkcja celu, poczπtkowa waroúc zmiennej, krok ktÛry okreúla odlweg≥oúc miÍdzy punktem poczπtkowaym a koÒcowym, alpha rozszerza lub zmienjsza krok z kaødym kroku pÍtli, max liczba wywo≥aÒ funkcji celu
 	try
 	{
-		double* p = new double[2]{ 0,0 }; //przechowuje nasze przedzia≈Çy gdzie jest miinmum
+		double* p = new double[2] { 0, 0 }; //przechowuje nasze przedzia≥y gdzie jest miinmum
 		int i = 0;
-		double temp = 0; 
-		solution X0(x0), X1(x0 + d); //punkt poczƒÖtkowy, obiekty klasy solution x1 = x0 + d
-		X0.fit_fun(ff, ud1, ud2); 
-		X1.fit_fun(ff, ud1, ud2);// wylicza warto≈õƒá funkcji celu w tych punktach
+		double temp = 0;
+		solution X0(x0), X1(x0 + d); //punkt poczπtkowy, obiekty klasy solution x1 = x0 + d
+		X0.fit_fun(ff, ud1, ud2);
+		X1.fit_fun(ff, ud1, ud2);// wylicza wartoúÊ funkcji celu w tych punktach
 		if (X0.y == X1.y)
 		{
 			p[0] = m2d(X0.x);
-			p[1] = m2d(X1.x); // Je≈õli te same wartosci to zwraca ten przedzia≈Ç bo zak≈Çada, ≈ºe nie ma w nim znaczacych zmien finkcji celu
-			std::cout << solution::f_calls << "";
-			solution::clear_calls();
+			p[1] = m2d(X1.x); // Jeúli te same wartosci to zwraca ten przedzia≥ bo zak≥ada, øe nie ma w nim znaczacych zmien finkcji celu
 			return p;
-		}	
+		}
 		if (X1.y > X0.y)
 		{
-			d = -d; // je≈õli warto≈õc funcji w x1 > x0 to funkcja ro≈õnie czyli nie zmierzamy w stronƒô minimum, zmieniamy kierunek daltego d na - bo chcemy siƒô cofnƒÖƒá
+			d = -d; // jeúli wartoúc funcji w x1 > x0 to funkcja roúnie czyli nie zmierzamy w stronÍ minimum, zmieniamy kierunek daltego d na - bo chcemy siÍ cofnπÊ
 			X1.x = X0.x + d;
 			X1.fit_fun(ff, ud1, ud2); // liczymy funkcje celu 
 			if (X1.y >= X0.y)
 			{
 				p[0] = m2d(X1.x);
-				p[1] = m2d(X0.x) - d; // je≈õli nadal jest wiƒôksza to zwracamy ten przedzia≈Ç
-				std::cout << solution::f_calls << "";
-				solution::clear_calls();
+				p[1] = m2d(X0.x) - d; // jeúli nadal jest wiÍksza to zwracamy ten przedzia
 				return p;
 			}
 		}
 		do
 		{
-			if (solution::f_calls > Nmax) //sprawdza czy liczba wywolan funkcji celu orzekroczy≈Ça dozwolnƒÖ max liczbƒô
+			if (solution::f_calls > Nmax) //sprawdza czy liczba wywolan funkcji celu orzekroczy≥a dozwolnπ max liczbÍ
 			{
-				X0.flag = 0; 
-				std::cout << solution::f_calls << "";
-				solution::clear_calls();
+				X0.flag = 0;
 				return 0;
-			}	
+			}
 			i = i + 1;
 			temp = m2d(X0.x);
 
 			X1 = X0.x + pow(alpha, i) * d; //oblicza nowy punkt x1 zwiekszajac krok alfa do poteki i
 			X1.fit_fun(ff, ud1, ud2); // liczbymy wartosc funkcji celu  wnowuym punkcie x1
-		} while (X0.y <= X1.y); // je≈õli prawa stona jest mniejsza to siƒô zatrzymujmy bo mmay minimum
-		if (d > 0) // je≈õli idziemy w prawo to idziemy 
+		} while (X0.y <= X1.y); // jeúli prawa stona jest mniejsza to siÍ zatrzymujmy bo mmay minimum
+		if (d > 0) // jeúli idziemy w prawo to idziemy 
 		{
 			p[0] = temp;
 			p[1] = m2d(X1.x);
@@ -87,9 +82,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 			p[1] = temp;
 			p[0] = m2d(X1.x);
 		}
-		std::cout << solution::f_calls << "";
-		solution::clear_calls();
-		return p; // zwraca przedzia≈Ç w kt√≥rym znaleziono minimum
+		return p; // zwraca przedzia≥ w ktÛrym znaleziono minimum
 	}
 	catch (string ex_info)
 	{
@@ -101,63 +94,47 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 {
 	try
 	{
-		solution Xopt; // zmienna przechowujƒÖca wynik
+		solution Xopt;
 		solution a0(a), b0(b);
 		a0.fit_fun(ff, ud1, ud2);
 		b0.fit_fun(ff, ud1, ud2);
-		solution c(0), d(0); //Punkty wewnƒôtrzne przedzia≈Çu [a , b]
+		solution c(0), d(0); //Punkty wewnÍtrzne przedzia≥u [a , b]
 		int k = 1;
 
-		// Znajdujemy najmniejszƒÖ liczbƒô k spe≈ÇniajƒÖcƒÖ nier√≥wno≈õƒá œÜk > (b - a) / Œµ
-		while (GetFib(k) <= (b0.x - a0.x) / epsilon) {
+		while (GetFib(k) < (b0.x - a0.x) / epsilon) {
 			k++;
 		}
 
-		// Upewniamy siƒô, ≈ºe warto≈õci œÜk-1 i œÜk sƒÖ r√≥≈ºne od zera bo nie mozemy dzieliƒá przez 0
-		if (GetFib(k - 1) == 0 || GetFib(k) == 0) {
-			throw std::runtime_error("Division by zero in Fibonacci calculation");
-		}
-
-		// Wyznaczenie punkt√≥w wewnƒôtrznych na podstanie d≈Çugo≈õci pfrzedzia≈Çu liczb fibonaciego
-		c.x = b0.x - ((GetFib(k - 1)) / GetFib(k)) * (b0.x - a0.x);
+		c.x = b0.x - GetFib(k - 1) / GetFib(k) * (b0.x - a0.x);
 		d.x = a0.x + b0.x - c.x;
 
-		c.fit_fun(ff, ud1, ud2); // oblczenie wartosci funkcji celu
+		c.fit_fun(ff, ud1, ud2);  // oblczenie wartosci funkcji celu
 		d.fit_fun(ff, ud1, ud2);
-
-
-		for (int i = 0; i <= k - 3; i++) // punky c i d dzielƒÖ przedzia≈Ç a i b na 3 czƒôsci dlatego k  - 3
+		Xopt.ud = b - a;
+		for (int i = 0; i < k - 3; i++) // punky c i d dzielπ przedzia≥ a i b na 3 czÍsci dlatego k  - 3
 		{
-		std::cout << "Iteracja " << i << ": c.x = " << m2d(c.x) << ", d.x = " << m2d(d.x) << "\n"; // wypisujemy krokoi poszukiwania minimum
-		std::cout << "Warto≈õci funkcji: c.y = " << m2d(c.y) << ", d.y = " << m2d(d.y) << "\n";
 
 			if (c.y < d.y)
 			{
-				b0 = d; // je≈õli wartosƒá funkcji w pounkcie c jest mniejsza ni≈º w d to minimalna warto≈õc funkcji znajduje siƒô w przedziale [a d]
+				b0 = d; // jeúli wartosÊ funkcji w pounkcie c jest mniejsza niø w d to minimalna wartoúc funkcji znajduje siÍ w przedziale [a d]
 			}
 			else
 			{
-				a0 = c; //a je≈õli nie to [c b]
+				a0 = c; //a jeúli nie to [c b]
 			}
 
-
-			c.x = b0.x - (((GetFib(k - i - 2)) / GetFib(k - i - 1)) * (b0.x - a0.x)); // w ka≈ºdej itaracji ponownie 
-			d.x = a0.x + b0.x - c.x; // obliczamy wsp√≥≈Çrzƒôdne c.x i d.x na podstaniw zmniejszonego przedzia≈Çu wykorzystujƒÖc kolejne liczby fibbonaciego
-
+			c.x = b0.x - GetFib(k - i - 2) / GetFib(k - i - 1) * (b0.x - a0.x); // w kaødej itaracji ponownie 
+			d.x = a0.x + b0.x - c.x; // obliczamy wspÛ≥rzÍdne c.x i d.x na podstaniw zmniejszonego przedzia≥u wykorzystujπc kolejne liczby fibbonaciego
 			c.fit_fun(ff, ud1, ud2);
-			d.fit_fun(ff, ud1, ud2); // warto≈õci funkcji celu w nowych punktach
-
-			// Przerwanie je≈õli r√≥≈ºnica pomiƒôdzy a(i) i b(i) jest mniejsza ni≈º epsilon
-			if (fabs(m2d(b0.x) - m2d(a0.x)) < epsilon) {
-				break;
-			}
+			d.fit_fun(ff, ud1, ud2);
+			Xopt.ud.add_row(m2d(b0.x - a0.x));
 		}
-
-		// Zwracamy ostateczne rozwiƒÖzanie czyli minimum funkcji
 		Xopt = c;
-		std::cout << solution::f_calls << ",";
-		solution::clear_calls();
+
+		Xopt.flag = 0;
+
 		return Xopt;
+		
 	}
 	catch (string ex_info)
 	{
@@ -179,6 +156,15 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 		b0.fit_fun(ff, ud1, ud2);
 		c0.fit_fun(ff, ud1, ud2);
 
+		// Inicjacja zapisu do pliku
+		std::ofstream logFile("lagrange.txt", std::ios::out);
+		if (logFile.is_open()) {
+			logFile << "Poczπtek algorytmu:\n";
+			logFile << "a0.x = " << a0.x << ", a0.y = " << a0.y << "\n";
+			logFile << "b0.x = " << b0.x << ", b0.y = " << b0.y << "\n";
+			logFile << "c0.x = " << c0.x << ", c0.y = " << c0.y << "\n\n";
+			logFile.close();
+		}
 		Xopt.ud = b - a;
 		do
 		{
@@ -191,12 +177,23 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				m2d(b0.y) * m2d(c0.x - a0.x) +
 				m2d(c0.y) * m2d(a0.x - b0.x);
 
+			// Zapis do pliku l i m
+			logFile.open("lagrange.txt", std::ios::app);
+			if (logFile.is_open()) {
+				logFile << "Iteracja " << i << ":\n";
+				logFile << "l = " << l << ", m = " << m << "\n";
+				logFile.close();
+			}
 
 			if (m <= 0)
 			{
 				Xopt.flag = -1;
-				std::cout << solution::f_calls << ",";
-				solution::clear_calls();
+				// Zapis b≥Ídu do pliku
+				logFile.open("lagrange.txt", std::ios::app);
+				if (logFile.is_open()) {
+					logFile << "B≥πd: m <= 0.\n\n";
+					logFile.close();
+				}
 				return Xopt;
 			}
 
@@ -205,6 +202,13 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			d0.fit_fun(ff, ud1, ud2);
 			di.fit_fun(ff, ud1, ud2);
 
+			// Zapis d0 i di do pliku
+			logFile.open("lagrange.txt", std::ios::app);
+			if (logFile.is_open()) {
+				logFile << "d0.x = " << d0.x << ", d0.y = " << d0.y << "\n";
+				logFile << "di.x = " << di.x << ", di.y = " << di.y << "\n\n";
+				logFile.close();
+			}
 
 			if (a0.x < d0.x && d0.x < c0.x)
 			{
@@ -234,10 +238,14 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				}
 				else
 				{
+					// Zapis b≥Ídu do pliku
+					logFile.open("lagrange.txt", std::ios::app);
+					if (logFile.is_open()) {
+						logFile << "B≥πd: d0.x poza zakresem.\n";
+						logFile.close();
+					}
 					Xopt = d0;
 					Xopt.flag = -1;
-					std::cout << solution::f_calls << ",";
-					solution::clear_calls();
 					return Xopt;
 				}
 			}
@@ -245,9 +253,25 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			i = i + 1;
 			Xopt.ud.add_row((b0.x - a0.x));
 
+			// Zapis punktÛw do pliku
+			logFile.open("lagrange.txt", std::ios::app);
+			if (logFile.is_open()) {
+				logFile << "Po aktualizacji:\n";
+				logFile << "a0.x = " << a0.x << ", a0.y = " << a0.y << "\n";
+				logFile << "b0.x = " << b0.x << ", b0.y = " << b0.y << "\n";
+				logFile << "c0.x = " << c0.x << ", c0.y = " << c0.y << "\n";
+				logFile << "d0.x = " << d0.x << ", d0.y = " << d0.y << "\n\n";
+				logFile.close();
+			}
+
 			if (solution::f_calls > Nmax)
 			{
-				std::cout << "B¬≥¬πd: Nie znaleziono przedzia¬≥u po " << Nmax << " pr√≥bach.\n\n";
+				// Zapis b≥Ídu do pliku
+				logFile.open("lagrange.txt", std::ios::app);
+				if (logFile.is_open()) {
+					logFile << "B≥πd: Nie znaleziono przedzia≥u po " << Nmax << " prÛbach.\n\n";
+					logFile.close();
+				}
 				throw std::runtime_error("Nie znaleziono przedzialu po " + std::to_string(Nmax) + " probach");
 			}
 
@@ -255,10 +279,16 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 
 		Xopt = d0;
 		Xopt.fit_fun(ff, ud1, ud2);
+
+		// Zapis wyniku do pliku
+		logFile.open("lagrange.txt", std::ios::app);
+		if (logFile.is_open()) {
+			logFile << "ZakoÒczenie algorytmu:\n";
+			logFile << "Xopt.x = " << Xopt.x << ", Xopt.y = " << Xopt.y << "\n\n";
+			logFile.close();
+		}
 		Xopt.flag = 0;
-		
-		std::cout << solution::f_calls << ",";
-		solution::clear_calls();
+
 		return Xopt;
 	}
 	catch (string ex_info)
